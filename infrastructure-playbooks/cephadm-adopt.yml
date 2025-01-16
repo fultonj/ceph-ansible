@@ -960,6 +960,10 @@
           extra_container_args:
             - -v
             - /etc/pki/ca-trust:/etc/pki/ca-trust:ro
+            {% if cluster | default("ceph") != "ceph" -%}
+            - -v
+            - /etc/ceph/{{ cluster }}.client.admin.keyring:/etc/ceph/ceph.client.admin.keyring
+            {% endif %}
       delegate_to: "{{ groups[mon_group_name][0] }}"
       environment:
         CEPHADM_IMAGE: '{{ ceph_docker_registry }}/{{ ceph_docker_image }}:{{ ceph_docker_image_tag }}'
